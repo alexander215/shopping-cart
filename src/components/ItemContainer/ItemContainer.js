@@ -1,12 +1,12 @@
-import React from 'react'
+import React, {useState} from 'react'
 
 const ItemContainer = (props) => {
-  // const [itemsState, setItemsState] = useState('Apple')
 
   return (
     <div>
       <h2>Items</h2>
-      {props.fruit}
+      {props.fruit[0].name}
+
     </div>
   )
 }
