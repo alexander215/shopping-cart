@@ -14,10 +14,10 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <h1>Shopping Cart</h1>
-      {/* <ItemContainer fruit={item}/> */}
-      <ItemContainer fruit={this.state.items}/>
-    </div>
+        <h1>Shopping Cart</h1>
+        {/* <ItemContainer fruit={item}/> */}
+        <ItemContainer fruit={this.state.items}/>
+      </div>
   );
 }
 }
