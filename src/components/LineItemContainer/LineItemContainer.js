@@ -5,7 +5,7 @@ const LineItemContainer = (props) => {
     <div>
       {props.name} | 
 
-      <input type='number' min='0' value={props.weight} /> kg | 
+      <input type='number' min='0' id={props.id} value={props.weight} name={props.name} onChange={props.weightUpdate} /> kg | 
       ${props.price}
     </div>
   )

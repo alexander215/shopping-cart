@@ -8,7 +8,7 @@ const ItemContainer = (props) => {
   const coupons = props.coupons;
 
   const displayLineItems = lineItems.map( element => (
-    <LineItemContainer name={element.name} price={element.price} weight={element.weight}/>
+    <LineItemContainer id={element.id} name={element.name} price={element.price} weight={element.weight} weightUpdate={props.weightUpdate}/>
   ))
 
   const displayCoupons = coupons.map( element => {
