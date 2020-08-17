@@ -1,18 +1,19 @@
-import React, {useState} from 'react'
+import React from 'react';
 import LineItemContainer from '../LineItemContainer/LineItemContainer';
 
 
 const ItemContainer = (props) => {
+  const lineItems = props.fruit;
 
   return (
     <div>
       <h2>Items</h2>
-      {/* {props.fruit[0].name} */}
-      <LineItemContainer name={props.fruit[0].name} price={props.fruit[0].price} weight={props.fruit[0].weight}/>
-
-
+      {lineItems.map( element => (
+          <LineItemContainer name={element.name} price={element.price} weight={element.weight}/>
+      ))
+      }
     </div>
   )
 }
 
-export default ItemContainer
+export default ItemContainer;
