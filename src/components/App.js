@@ -23,20 +23,22 @@ class App extends Component {
   }
 
   weightUpdate = (e) => {
-    console.log(`Weight updated for id: ${e.target.id}`)
-    console.log(e.target)
     const updateItemIndex = this.state.items.findIndex( element => element.id == e.target.id);
     const newItems = [...this.state.items];
+    const newWeight = parseInt(e.target.value);
+    const newCurrentPrice = this.calculatePrice(updateItemIndex, newWeight)
     newItems[updateItemIndex] = {
       ...newItems[updateItemIndex],
-      weight: parseInt(e.target.value)
+      weight: newWeight,
+      currentPrice: newCurrentPrice
     }
-    console.log(newItems)
-  
     this.setState({
       items: newItems
     })
+  }
 
+  calculatePrice = (index, weight) => {
+    return this.state.items[index].price * weight
   }
 
   render() {
