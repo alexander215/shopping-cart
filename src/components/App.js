@@ -58,6 +58,7 @@ class App extends Component {
     if (this.state.percentualCouponApplied) { 
       newSubtotal *= (1 - (this.state.percentualCouponApplied * .01 ))
     }
+    console.log(newSubtotal, "<-newsubtotal")
     let newShipping = this.calculateShipping(newSubtotal, calculateSubtotalsWeight[1]);
     let newTotal = this.calculateTotalAmount(newSubtotal, newShipping);
     this.setState({
@@ -75,7 +76,7 @@ class App extends Component {
       currentSubtotal += element.currentPrice,
       currentWeight += element.weight
     ))
-    
+    if (currentSubtotal < 0) {currentSubtotal = 0};
     return [currentSubtotal, currentWeight];
   }
 
@@ -83,15 +84,17 @@ class App extends Component {
   calculateShipping = (newSubtotal, weight) => {
     if (newSubtotal > 400 || this.state.freeShippingCouponApplied === 0) {
       return 'Free shipping!';
-    } else if (weight <= 10){
+    } else if (weight <= 10 && weight > 0){
       return 30;
-    } else {
+    } else if (weight > 10) {
       let overWeight = 0;
       while (weight >= 10) {
         overWeight++;
         weight -= 5;
       }
       return (overWeight * 7) + 30;
+    } else {
+      return 0;
     }
   }
 
@@ -100,8 +103,12 @@ class App extends Component {
     let totalDiscount = 0;
     if (this.state.fixedCouponApplied) { totalDiscount = this.state.fixedCouponApplied}
     if (typeof newShipping === 'number') {
-      return newSubtotal + newShipping - totalDiscount;
+      let newTotal = newSubtotal + newShipping - totalDiscount;
+      if (newTotal < 0) {newTotal = 0};
+      return newTotal;
     } else {
+      let newTotal = newSubtotal - totalDiscount;
+      if (newTotal < 0) {newTotal = 0};
       return newSubtotal - totalDiscount;
     }
   };
