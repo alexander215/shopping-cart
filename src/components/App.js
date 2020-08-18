@@ -22,6 +22,8 @@ class App extends Component {
     ]
   }
 
+  // This is called when the user adds items to their cart.
+  // It increases the weight and calls calculatePrice to update the price.
   weightUpdate = (e) => {
     const updateItemIndex = this.state.items.findIndex( element => element.id == e.target.id);
     const newItems = [...this.state.items];
@@ -37,6 +39,7 @@ class App extends Component {
     })
   }
 
+  // This calculates the price of items using the amount and price / kg
   calculatePrice = (index, weight) => {
     return this.state.items[index].price * weight
   }
