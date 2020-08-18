@@ -12,16 +12,20 @@ class App extends Component {
       { id: 3, name: 'Orange', weight: 0, price: 30, currentPrice: 0 }
     ],
     coupons: [
-      { id: 1, name: '30_PERCENT', active: false, type: 'percentual' },
-      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount'},
-      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping' },
+      { id: 1, name: '30_PERCENT', active: false, type: 'percentual', value: 30 },
+      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount', value: 100},
+      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping', value: 0 },
     ],
     customerCoupon: null,
     subtotal: 0,
     shipping: 0,
     total: 0,
     couponSubmitted: false,
-    couponApprovalMessage: null
+    couponApprovalMessage: null,
+    percentualCouponApplied: null,
+    fixedCouponApplied: null,
+    freeShippingCouponApplied: null
+
   }
 
   // This is called when the user adds items to their cart.
@@ -47,9 +51,13 @@ class App extends Component {
     return this.state.items[index].price * weight
   }
 
+  // This calculates and sets state for all three totals
   calculateTotals = (newItems) => {
     let calculateSubtotalsWeight = this.calculateSubtotal(newItems);
     let newSubtotal = calculateSubtotalsWeight[0];
+    if (this.state.percentualCouponApplied) { 
+      newSubtotal *= (1 - (this.state.percentualCouponApplied * .01 ))
+    }
     let newShipping = this.calculateShipping(newSubtotal, calculateSubtotalsWeight[1]);
     let newTotal = this.calculateTotalAmount(newSubtotal, newShipping);
     this.setState({
@@ -59,6 +67,7 @@ class App extends Component {
     })
   }
 
+  // This calculates the current subtotal
   calculateSubtotal = (newItems) => {
     let currentSubtotal = 0;
     let currentWeight = 0;
@@ -70,6 +79,7 @@ class App extends Component {
     return [currentSubtotal, currentWeight];
   }
 
+  // This calculates the shipping
   calculateShipping = (newSubtotal, weight) => {
     if (newSubtotal > 400) {
       return 'Free shipping!';
@@ -85,6 +95,7 @@ class App extends Component {
     }
   }
 
+  // This calculates the total
   calculateTotalAmount = (newSubtotal, newShipping) => {
     if (typeof newShipping === 'number') {
       return newSubtotal + newShipping;
@@ -93,12 +104,14 @@ class App extends Component {
     }
   };
 
+  // This handleChange takes the input for the coupon field
   handleChange = (e) => {
     this.setState({
       customerCoupon: e.target.value
     })
   }
 
+  // This validates the coupon submitted by the user
   checkForCoupon = (e) => {
     e.preventDefault();
     console.log('customer coupon: ', this.state.customerCoupon);
@@ -107,13 +120,23 @@ class App extends Component {
     this.state.coupons.forEach( element => {
       if(element.name === customerCoupon) {
         couponApproved = true;
-        console.log(element)
+        this.activateCoupon(element);
       }
     })
     this.setState({
       couponSubmitted: true,
       couponApprovalMessage: couponApproved
     })
+  }
+
+  // This activates a valid coupon
+  activateCoupon = (coupon) => {
+    console.log(coupon);
+    if (coupon.type === 'percentual') {
+      this.setState({
+        percentualCouponApplied: coupon.value
+      })
+    }
   }
 
   render() {
