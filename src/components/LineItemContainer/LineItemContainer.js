@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 const LineItemContainer = (props) => {
   return (
@@ -11,4 +11,4 @@ const LineItemContainer = (props) => {
   )
 }
 
-export default LineItemContainer
+export default LineItemContainer;

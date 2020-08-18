@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import ItemContainer from './ItemContainer/ItemContainer';
 import TotalsContainer from './TotalsContainer/TotalsContainer';
+import CouponInput from './CouponInput/CouponInput';
 
 class App extends Component {
   state = {
@@ -15,6 +16,7 @@ class App extends Component {
       { id: 2, name: '100_OFF', active: false },
       { id: 3, name: 'FREE_SHIPPING', active: false },
     ],
+    customerCoupon: null,
     subtotal: 0,
     shipping: 0,
     total: 0
@@ -52,7 +54,7 @@ class App extends Component {
     let calculateSubtotalsWeight = this.calculateSubtotal(newItems);
     let newSubtotal = calculateSubtotalsWeight[0];
     let newShipping = this.calculateShipping(newSubtotal, calculateSubtotalsWeight[1]);
-    let newTotal = this.caculateTotalAmount(newSubtotal, newShipping);
+    let newTotal = this.calculateTotalAmount(newSubtotal, newShipping);
     this.setState({
       subtotal: newSubtotal,
       shipping: newShipping,
@@ -86,13 +88,24 @@ class App extends Component {
     }
   }
 
-  caculateTotalAmount = (newSubtotal, newShipping) => {
+  calculateTotalAmount = (newSubtotal, newShipping) => {
     if (typeof newShipping === 'number') {
       return newSubtotal + newShipping;
     } else {
       return newSubtotal;
     }
   };
+
+  handleChange = (e) => {
+    this.setState({
+      customerCoupon: e.target.value
+    })
+  }
+
+  checkForCoupon = (e) => {
+    e.preventDefault();
+    console.log('customer coupon: ', this.state.customerCoupon);
+  }
 
   render() {
     return (
@@ -101,6 +114,8 @@ class App extends Component {
         <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} />
         <hr/>
         <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
+        <hr/>
+        <CouponInput handleChange={this.handleChange} checkForCoupon={e => this.checkForCoupon(e)}/>
       </div>
   );
 }
