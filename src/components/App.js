@@ -32,7 +32,6 @@ class App extends Component {
     const newItems = [...this.state.items];
     const newWeight = parseInt(e.target.value);
     const newCurrentPrice = this.calculatePrice(updateItemIndex, newWeight)
-    console.log(typeof newCurrentPrice)
     newItems[updateItemIndex] = {
       ...newItems[updateItemIndex],
       weight: newWeight,
@@ -50,19 +49,50 @@ class App extends Component {
   }
 
   calculateTotals = (newItems) => {
-    let newSubtotal = this.calculateSubtotal(newItems)
+    let calculateSubtotalsWeight = this.calculateSubtotal(newItems);
+    let newSubtotal = calculateSubtotalsWeight[0];
+    let newShipping = this.calculateShipping(newSubtotal, calculateSubtotalsWeight[1]);
+    let newTotal = this.caculateTotalAmount(newSubtotal, newShipping);
     this.setState({
-      subtotal: newSubtotal
+      subtotal: newSubtotal,
+      shipping: newShipping,
+      total: newTotal
     })
   }
 
   calculateSubtotal = (newItems) => {
     let currentSubtotal = 0;
+    let currentWeight = 0;
     newItems.map( element => (
-      currentSubtotal += element.currentPrice
+      currentSubtotal += element.currentPrice,
+      currentWeight += element.weight
     ))
-    return currentSubtotal
+    
+    return [currentSubtotal, currentWeight];
   }
+
+  calculateShipping = (newSubtotal, weight) => {
+    if (newSubtotal > 400) {
+      return 'Free shipping!';
+    } else if (weight <= 10){
+      return 30;
+    } else {
+      let overWeight = 0;
+      while (weight >= 10) {
+        overWeight++;
+        weight -= 5;
+      }
+      return (overWeight * 7) + 30;
+    }
+  }
+
+  caculateTotalAmount = (newSubtotal, newShipping) => {
+    if (typeof newShipping === 'number') {
+      return newSubtotal + newShipping;
+    } else {
+      return newSubtotal;
+    }
+  };
 
   render() {
     return (
@@ -70,7 +100,6 @@ class App extends Component {
         <h1>Shopping Cart</h1>
         <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} />
         <hr/>
-        {/* <TotalsContainer totals={this.state.totals}/> */}
         <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
       </div>
   );
