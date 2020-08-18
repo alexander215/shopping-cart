@@ -138,15 +138,15 @@ class App extends Component {
     if (coupon.type === 'percentual') {
       this.setState({
         percentualCouponApplied: coupon.value
-      }, this.calculateTotals(newTotals))
+      }, () => this.calculateTotals(newTotals))
     } else if (coupon.type === 'fixed-amount') {
       this.setState({
         fixedCouponApplied: coupon.value
-      }, this.calculateTotals(newTotals))
+      }, () => this.calculateTotals(newTotals))
     } else if (coupon.type === 'free-shipping') {
       this.setState({
         freeShippingCouponApplied: coupon.value
-      }, this.calculateTotals(newTotals))
+      }, () => this.calculateTotals(newTotals))
     }
     // this.calculateTotals(this.state.items);
     // console.log(newTotals)
