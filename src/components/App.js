@@ -15,11 +15,14 @@ class App extends Component {
       { id: 2, name: '100_OFF', active: false },
       { id: 3, name: 'FREE_SHIPPING', active: false },
     ],
-    totals: [
-      { id: 1, name: 'Subtotal', value: 0 },
-      { id: 2, name: 'Shipping', value: 0 },
-      { id: 3, name: 'Total', value: 0 }
-    ]
+    subtotal: 0,
+    shipping: 0,
+    total: 0
+    // totals: [
+    //   { id: 1, name: 'Subtotal', value: 0 },
+    //   { id: 2, name: 'Shipping', value: 0 },
+    //   { id: 3, name: 'Total', value: 0 }
+    // ]
   }
 
   // This is called when the user adds items to their cart.
@@ -29,11 +32,13 @@ class App extends Component {
     const newItems = [...this.state.items];
     const newWeight = parseInt(e.target.value);
     const newCurrentPrice = this.calculatePrice(updateItemIndex, newWeight)
+    console.log(typeof newCurrentPrice)
     newItems[updateItemIndex] = {
       ...newItems[updateItemIndex],
       weight: newWeight,
       currentPrice: newCurrentPrice
     }
+    this.calculateTotals(newItems);
     this.setState({
       items: newItems
     })
@@ -44,13 +49,29 @@ class App extends Component {
     return this.state.items[index].price * weight
   }
 
+  calculateTotals = (newItems) => {
+    let newSubtotal = this.calculateSubtotal(newItems)
+    this.setState({
+      subtotal: newSubtotal
+    })
+  }
+
+  calculateSubtotal = (newItems) => {
+    let currentSubtotal = 0;
+    newItems.map( element => (
+      currentSubtotal += element.currentPrice
+    ))
+    return currentSubtotal
+  }
+
   render() {
     return (
       <div className="App">
         <h1>Shopping Cart</h1>
         <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} />
         <hr/>
-        <TotalsContainer totals={this.state.totals}/>
+        {/* <TotalsContainer totals={this.state.totals}/> */}
+        <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
       </div>
   );
 }
