@@ -3,6 +3,7 @@ import './App.css';
 import ItemContainer from './ItemContainer/ItemContainer';
 import TotalsContainer from './TotalsContainer/TotalsContainer';
 import CouponInput from './CouponInput/CouponInput';
+import CouponContainer from './CouponContainer/CouponContainer';
 
 class App extends Component {
   state = {
@@ -126,12 +127,17 @@ class App extends Component {
     console.log('customer coupon: ', this.state.customerCoupon);
     let couponApproved = false;
     const customerCoupon = this.state.customerCoupon;
+    let couponIndex = null;
     this.state.coupons.forEach( element => {
       if(element.name === customerCoupon) {
         couponApproved = true;
-        this.activateCoupon(element);
+        couponIndex = this.state.coupons.findIndex( element => element.name == customerCoupon);
+        // this.activateCoupon(element);
+        this.activateCoupon(couponIndex);
       }
     })
+    
+    console.log('coupon index: ', couponIndex);
     this.setState({
       couponSubmitted: true,
       couponApprovalMessage: couponApproved
@@ -139,9 +145,16 @@ class App extends Component {
   }
 
   // This activates a valid coupon
-  activateCoupon = (coupon) => {
-    console.log(coupon);
+  activateCoupon = (couponIndex) => {
+    console.log('coupon in activateCoupon', couponIndex);
+    let coupon = this.state.coupons[couponIndex];
+    console.log('coupon in activateCoupon', coupon);
     let newTotals = this.state.items;
+    let newCoupons = this.state.coupons;
+    newCoupons[couponIndex] = {
+      ...newCoupons[couponIndex],
+      active: true
+    }
     if (coupon.type === 'percentual') {
       this.setState({
         percentualCouponApplied: coupon.value
@@ -155,10 +168,25 @@ class App extends Component {
         freeShippingCouponApplied: coupon.value
       }, () => this.calculateTotals(newTotals))
     }
-    // this.calculateTotals(this.state.items);
-    // console.log(newTotals)
-    // this.calculateTotals(newTotals);
   }
+  // // This activates a valid coupon based off of passing in an element
+  // activateCoupon = (coupon) => {
+  //   console.log('coupon in activateCoupon', coupon);
+  //   let newTotals = this.state.items;
+  //   if (coupon.type === 'percentual') {
+  //     this.setState({
+  //       percentualCouponApplied: coupon.value
+  //     }, () => this.calculateTotals(newTotals))
+  //   } else if (coupon.type === 'fixed-amount') {
+  //     this.setState({
+  //       fixedCouponApplied: coupon.value
+  //     }, () => this.calculateTotals(newTotals))
+  //   } else if (coupon.type === 'free-shipping') {
+  //     this.setState({
+  //       freeShippingCouponApplied: coupon.value
+  //     }, () => this.calculateTotals(newTotals))
+  //   }
+  // }
 
   render() {
     return (
