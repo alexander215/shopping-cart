@@ -81,7 +81,7 @@ class App extends Component {
 
   // This calculates the shipping
   calculateShipping = (newSubtotal, weight) => {
-    if (newSubtotal > 400) {
+    if (newSubtotal > 400 || this.state.freeShippingCouponApplied === 0) {
       return 'Free shipping!';
     } else if (weight <= 10){
       return 30;
@@ -97,10 +97,12 @@ class App extends Component {
 
   // This calculates the total
   calculateTotalAmount = (newSubtotal, newShipping) => {
+    let totalDiscount = 0;
+    if (this.state.fixedCouponApplied) { totalDiscount = this.state.fixedCouponApplied}
     if (typeof newShipping === 'number') {
-      return newSubtotal + newShipping;
+      return newSubtotal + newShipping - totalDiscount;
     } else {
-      return newSubtotal;
+      return newSubtotal - totalDiscount;
     }
   };
 
@@ -135,6 +137,14 @@ class App extends Component {
     if (coupon.type === 'percentual') {
       this.setState({
         percentualCouponApplied: coupon.value
+      })
+    } else if (coupon.type === 'fixed-amount') {
+      this.setState({
+        fixedCouponApplied: coupon.value
+      })
+    } else if (coupon.type === 'free-shipping') {
+      this.setState({
+        freeShippingCouponApplied: coupon.value
       })
     }
   }
