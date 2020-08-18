@@ -134,19 +134,23 @@ class App extends Component {
   // This activates a valid coupon
   activateCoupon = (coupon) => {
     console.log(coupon);
+    let newTotals = this.state.items;
     if (coupon.type === 'percentual') {
       this.setState({
         percentualCouponApplied: coupon.value
-      })
+      }, this.calculateTotals(newTotals))
     } else if (coupon.type === 'fixed-amount') {
       this.setState({
         fixedCouponApplied: coupon.value
-      })
+      }, this.calculateTotals(newTotals))
     } else if (coupon.type === 'free-shipping') {
       this.setState({
         freeShippingCouponApplied: coupon.value
-      })
+      }, this.calculateTotals(newTotals))
     }
+    // this.calculateTotals(this.state.items);
+    // console.log(newTotals)
+    // this.calculateTotals(newTotals);
   }
 
   render() {
