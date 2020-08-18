@@ -12,19 +12,16 @@ class App extends Component {
       { id: 3, name: 'Orange', weight: 0, price: 30, currentPrice: 0 }
     ],
     coupons: [
-      { id: 1, name: '30_PERCENT', active: false },
-      { id: 2, name: '100_OFF', active: false },
-      { id: 3, name: 'FREE_SHIPPING', active: false },
+      { id: 1, name: '30_PERCENT', active: false, type: 'percentual' },
+      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount'},
+      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping' },
     ],
     customerCoupon: null,
     subtotal: 0,
     shipping: 0,
-    total: 0
-    // totals: [
-    //   { id: 1, name: 'Subtotal', value: 0 },
-    //   { id: 2, name: 'Shipping', value: 0 },
-    //   { id: 3, name: 'Total', value: 0 }
-    // ]
+    total: 0,
+    couponSubmitted: false,
+    couponApprovalMessage: null
   }
 
   // This is called when the user adds items to their cart.
@@ -105,6 +102,18 @@ class App extends Component {
   checkForCoupon = (e) => {
     e.preventDefault();
     console.log('customer coupon: ', this.state.customerCoupon);
+    let couponApproved = false;
+    const customerCoupon = this.state.customerCoupon;
+    this.state.coupons.forEach( element => {
+      if(element.name === customerCoupon) {
+        couponApproved = true;
+        console.log(element)
+      }
+    })
+    this.setState({
+      couponSubmitted: true,
+      couponApprovalMessage: couponApproved
+    })
   }
 
   render() {
@@ -116,6 +125,7 @@ class App extends Component {
         <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
         <hr/>
         <CouponInput handleChange={this.handleChange} checkForCoupon={e => this.checkForCoupon(e)}/>
+        {(this.state.couponSubmitted && !this.state.couponApprovalMessage) ? 'Sorry, that is not a valid coupon.' : null }
       </div>
   );
 }
