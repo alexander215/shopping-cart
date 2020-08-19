@@ -183,13 +183,21 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Shopping Cart</h1>
-        <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} />
-        <hr/>
-        <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
-        <hr/>
-        <CouponInput handleChange={this.handleChange} checkForCoupon={e => this.checkForCoupon(e)}/>
-        {(this.state.couponSubmitted && !this.state.couponApprovalMessage) ? 'Sorry, that is not a valid coupon.' : null }
+        <div class="cart-container">
+          <div class="cart-section">
+            <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} />
+          </div>
+            <hr class="cart-divider"/>
+          <div class="cart-section">
+            <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
+          </div>
+            <hr class="cart-divider"/>
+          <div class="cart-section">
+            <CouponInput handleChange={this.handleChange} checkForCoupon={e => this.checkForCoupon(e)}/>
+            {(this.state.couponSubmitted && !this.state.couponApprovalMessage) ? 'Sorry, that is not a valid coupon.' : null }
+          </div>
+        </div>
+        <input class='purchase-button' type='submit' value='Purchase' />
       </div>
   );
 }

@@ -21,9 +21,16 @@ const ItemContainer = (props) => {
 
   return (
     <div>
-      <h2>Items</h2>
-      {displayLineItems}
-      {displayCoupons}
+      <table class="table-section">
+        <tbody>
+          {displayLineItems}
+        </tbody>
+      </table>
+      <table class="table-section">
+        <tbody>
+          {displayCoupons}
+        </tbody>
+      </table>
     </div>
   )
 }

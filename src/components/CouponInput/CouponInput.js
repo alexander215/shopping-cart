@@ -2,10 +2,10 @@ import React from 'react';
 
 const CouponInput = (props) => {
   return (
-    <div>
+    <div class='coupon-input-section'>
       <form onSubmit={props.checkForCoupon}>
-        <input type='text' placeholder='Coupon code' onChange={props.handleChange} />
-        <input type='submit' value='Apply' />
+        <input class='coupon-input' type='text' placeholder='Coupon code' onChange={props.handleChange} />
+        <input class='coupon-button' type='submit' value='Apply' />
       </form>
     </div>
   )
