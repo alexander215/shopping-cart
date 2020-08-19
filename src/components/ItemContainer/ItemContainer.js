@@ -8,11 +8,15 @@ const ItemContainer = (props) => {
   const coupons = props.coupons;
 
   const displayLineItems = lineItems.map( element => (
-    <LineItemContainer id={element.id} name={element.name} currentPrice={element.currentPrice} weight={element.weight} weightUpdate={props.weightUpdate}/>
+    <LineItemContainer key={element.id} id={element.id} name={element.name} currentPrice={element.currentPrice} weight={element.weight} weightUpdate={props.weightUpdate}/>
   ))
 
   const displayCoupons = coupons.map( element => {
-    if (element.active) return <CouponContainer name={element.name} active={element.active}/>
+    if (element.active) { 
+      return <CouponContainer key={element.id} name={element.name} active={element.active} savings={element.savings} amountOfDiscount={element.amountOfDiscount}/>
+    } else {
+      return <></>
+    }
   })
 
   return (

@@ -3,7 +3,6 @@ import './App.css';
 import ItemContainer from './ItemContainer/ItemContainer';
 import TotalsContainer from './TotalsContainer/TotalsContainer';
 import CouponInput from './CouponInput/CouponInput';
-import CouponContainer from './CouponContainer/CouponContainer';
 
 class App extends Component {
   state = {
@@ -13,9 +12,9 @@ class App extends Component {
       { id: 3, name: 'Orange', weight: 0, price: 30, currentPrice: 0 }
     ],
     coupons: [
-      { id: 1, name: '30_PERCENT', active: false, type: 'percentual', value: 30 },
-      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount', value: 100},
-      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping', value: 0 },
+      { id: 1, name: '30_PERCENT', active: false, type: 'percentual', value: 30, savings: '30%', amountOfDiscount: 0 },
+      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount', value: 100, savings: '$100', amountOfDiscount: 0},
+      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping', value: 0, savings: 'Free!', amountOfDiscount: 0},
     ],
     customerCoupon: null,
     subtotal: 0,
@@ -59,7 +58,7 @@ class App extends Component {
     if (this.state.percentualCouponApplied) { 
       newSubtotal *= (1 - (this.state.percentualCouponApplied * .01 ))
     }
-    console.log(newSubtotal, "<-newsubtotal")
+    // console.log(newSubtotal, "<-newsubtotal")
     let newShipping = this.calculateShipping(newSubtotal, calculateSubtotalsWeight[1]);
     let newTotal = this.calculateTotalAmount(newSubtotal, newShipping);
     this.setState({
@@ -73,10 +72,10 @@ class App extends Component {
   calculateSubtotal = (newItems) => {
     let currentSubtotal = 0;
     let currentWeight = 0;
-    newItems.map( element => (
+    newItems.map( element => ((
       currentSubtotal += element.currentPrice,
       currentWeight += element.weight
-    ))
+      )))
     if (currentSubtotal < 0) {currentSubtotal = 0};
     return [currentSubtotal, currentWeight];
   }
@@ -102,17 +101,28 @@ class App extends Component {
   // This calculates the total
   calculateTotalAmount = (newSubtotal, newShipping) => {
     let totalDiscount = 0;
-    if (this.state.fixedCouponApplied) { totalDiscount = this.state.fixedCouponApplied}
+    if (this.state.fixedCouponApplied) { totalDiscount = this.state.fixedCouponApplied }
     if (typeof newShipping === 'number') {
+      let totalBeforeDiscount = newSubtotal + newShipping;
       let newTotal = newSubtotal + newShipping - totalDiscount;
       if (newTotal < 0) {newTotal = 0};
+      this.calculateDiscountAmount(totalBeforeDiscount, newTotal)
       return newTotal;
     } else {
+      let totalBeforeDiscount = newSubtotal 
       let newTotal = newSubtotal - totalDiscount;
       if (newTotal < 0) {newTotal = 0};
-      return newSubtotal - totalDiscount;
+      this.calculateDiscountAmount(totalBeforeDiscount, newTotal)
+      return newTotal;
     }
   };
+
+  calculateDiscountAmount = (totalBeforeSavings, newTotal) => {
+    // console.log("total before savings: ", totalBeforeSavings, "new total: ", newTotal)
+    let totalSavings = totalBeforeSavings - newTotal
+    console.log("total savings: ", totalSavings)
+
+  }
 
   // This handleChange takes the input for the coupon field
   handleChange = (e) => {
@@ -124,7 +134,7 @@ class App extends Component {
   // This validates the coupon submitted by the user
   checkForCoupon = (e) => {
     e.preventDefault();
-    console.log('customer coupon: ', this.state.customerCoupon);
+    // console.log('customer coupon: ', this.state.customerCoupon);
     let couponApproved = false;
     const customerCoupon = this.state.customerCoupon;
     let couponIndex = null;
@@ -137,7 +147,7 @@ class App extends Component {
       }
     })
     
-    console.log('coupon index: ', couponIndex);
+    // console.log('coupon index: ', couponIndex);
     this.setState({
       couponSubmitted: true,
       couponApprovalMessage: couponApproved
@@ -146,9 +156,9 @@ class App extends Component {
 
   // This activates a valid coupon
   activateCoupon = (couponIndex) => {
-    console.log('coupon in activateCoupon', couponIndex);
+    // console.log('coupon in activateCoupon', couponIndex);
     let coupon = this.state.coupons[couponIndex];
-    console.log('coupon in activateCoupon', coupon);
+    // console.log('coupon in activateCoupon', coupon);
     let newTotals = this.state.items;
     let newCoupons = this.state.coupons;
     newCoupons[couponIndex] = {
@@ -169,24 +179,6 @@ class App extends Component {
       }, () => this.calculateTotals(newTotals))
     }
   }
-  // // This activates a valid coupon based off of passing in an element
-  // activateCoupon = (coupon) => {
-  //   console.log('coupon in activateCoupon', coupon);
-  //   let newTotals = this.state.items;
-  //   if (coupon.type === 'percentual') {
-  //     this.setState({
-  //       percentualCouponApplied: coupon.value
-  //     }, () => this.calculateTotals(newTotals))
-  //   } else if (coupon.type === 'fixed-amount') {
-  //     this.setState({
-  //       fixedCouponApplied: coupon.value
-  //     }, () => this.calculateTotals(newTotals))
-  //   } else if (coupon.type === 'free-shipping') {
-  //     this.setState({
-  //       freeShippingCouponApplied: coupon.value
-  //     }, () => this.calculateTotals(newTotals))
-  //   }
-  // }
 
   render() {
     return (
