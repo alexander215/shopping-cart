@@ -12,7 +12,7 @@ const CouponContainer = (props) => {
       <td class='line-item'>
         $ -{props.amountOfDiscount}
       </td>
-      <td class='line-item line-item-right'>
+      <td class='line-item coupon-line-item-right'>
         ({props.savings})
       </td>
     </tr>

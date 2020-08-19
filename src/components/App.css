@@ -42,6 +42,11 @@
 
 .line-item-right {
   text-align: right;
+  width: 70px;
+}
+
+.coupon-line-item-right {
+  text-align: right;
 }
 
 .coupon-button {
@@ -98,4 +103,8 @@
   font-size: 16px;
   margin: 25px 2px;
   border-radius: 4px;
+}
+
+input[type=number]::-webkit-inner-spin-button {
+  opacity: 1
 }
