@@ -108,3 +108,9 @@
 input[type=number]::-webkit-inner-spin-button {
   opacity: 1
 }
+
+.error-message-container {
+  color: #ff0033;
+  padding: 15px;
+  font-weight: 600;
+}

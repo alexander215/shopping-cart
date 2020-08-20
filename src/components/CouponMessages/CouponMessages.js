@@ -2,7 +2,7 @@ import React from 'react';
 
 const CouponMessages = (props) => {
   return (
-    <div>
+    <div className="error-message-container">
       {props.couponApprovalMessage}
     </div>
   )
