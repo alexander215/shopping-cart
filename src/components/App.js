@@ -185,17 +185,20 @@ class App extends Component {
     if (coupon.type === 'percentual') {
       this.setState({
         currentCouponInUse: coupon,
-        percentualCouponApplied: coupon.value
+        percentualCouponApplied: coupon.value,
+        customerCoupon: ''
       }, () => this.calculateTotals(newTotals))
     } else if (coupon.type === 'fixed-amount') {
       this.setState({
         currentCouponInUse: coupon,
-        fixedCouponApplied: coupon.value
+        fixedCouponApplied: coupon.value,
+        customerCoupon: ''
       }, () => this.calculateTotals(newTotals))
     } else if (coupon.type === 'free-shipping') {
       this.setState({
         currentCouponInUse: coupon,
-        freeShippingCouponApplied: coupon.value
+        freeShippingCouponApplied: coupon.value,
+        customerCoupon: ''
       }, () => this.calculateTotals(newTotals))
     }
   }
@@ -220,7 +223,7 @@ class App extends Component {
           </div>
             <hr class="cart-divider"/>
           <div class="cart-section">
-            <CouponInput handleChange={this.handleChange} checkForCoupon={e => this.checkForCoupon(e)}/>
+            <CouponInput handleChange={this.handleChange} customerCoupon={this.state.customerCoupon} checkForCoupon={e => this.checkForCoupon(e)}/>
             {(this.state.couponSubmitted && !this.state.couponApprovalStatus) ? <CouponMessages couponApprovalMessage={this.state.couponApprovalMessage} /> : null }
           </div>
         </div>
