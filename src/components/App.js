@@ -3,6 +3,7 @@ import './App.css';
 import ItemContainer from './ItemContainer/ItemContainer';
 import TotalsContainer from './TotalsContainer/TotalsContainer';
 import CouponInput from './CouponInput/CouponInput';
+import CouponMessages from './CouponMessages/CouponMessages';
 
 class App extends Component {
   state = {
@@ -22,11 +23,12 @@ class App extends Component {
     total: 0,
     couponSavings: 0,
     couponSubmitted: false,
-    couponApprovalMessage: null,
+    couponApprovalStatus: null,
     percentualCouponApplied: null,
     fixedCouponApplied: null,
     freeShippingCouponApplied: null,
-    currentCouponInUse: null
+    currentCouponInUse: null,
+    couponApprovalMessage: null
   }
 
   // This is called when the user adds items to their cart.
@@ -153,6 +155,8 @@ class App extends Component {
     e.preventDefault();
     let couponApproved = false;
     const customerCoupon = this.state.customerCoupon;
+    let couponApprovalMessage = this.state.couponApprovalMessage;
+    if (this.state.couponSubmitted === true) { couponApprovalMessage = 'Sorry, you can only use one coupon per transaction.'}
     let couponIndex = null;
     this.state.coupons.forEach( element => {
       if(element.name === customerCoupon) {
@@ -163,7 +167,8 @@ class App extends Component {
     })
     this.setState({
       couponSubmitted: true,
-      couponApprovalMessage: couponApproved
+      couponApprovalStatus: couponApproved,
+      couponApprovalMessage: couponApprovalMessage
     })
   }
 
@@ -215,7 +220,7 @@ class App extends Component {
             <hr class="cart-divider"/>
           <div class="cart-section">
             <CouponInput handleChange={this.handleChange} checkForCoupon={e => this.checkForCoupon(e)}/>
-            {(this.state.couponSubmitted && !this.state.couponApprovalMessage) ? 'Sorry, that is not a valid coupon.' : null }
+            {(this.state.couponSubmitted && !this.state.couponApprovalStatus) ? <CouponMessages couponApprovalMessage={this.state.couponApprovalMessage} /> : null }
           </div>
         </div>
         <input class='purchase-button' type='submit' value='Purchase' />
