@@ -4,7 +4,6 @@ const CouponMessages = (props) => {
   return (
     <div>
       {props.couponApprovalMessage}
-      {/* Sorry, that is not a valid coupon. */}
     </div>
   )
 }

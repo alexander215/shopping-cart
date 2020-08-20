@@ -155,12 +155,13 @@ class App extends Component {
     e.preventDefault();
     let couponApproved = false;
     const customerCoupon = this.state.customerCoupon;
-    let couponApprovalMessage = this.state.couponApprovalMessage;
+    let couponApprovalMessage = 'Sorry, that is not a valid coupon.';
     if (this.state.couponSubmitted === true) { couponApprovalMessage = 'Sorry, you can only use one coupon per transaction.'}
     let couponIndex = null;
     this.state.coupons.forEach( element => {
       if(element.name === customerCoupon) {
         couponApproved = true;
+        couponApprovalMessage = null;
         couponIndex = this.state.coupons.findIndex( element => element.name == customerCoupon);
         this.activateCoupon(couponIndex);
       }
