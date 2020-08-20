@@ -12,20 +12,21 @@ class App extends Component {
       { id: 3, name: 'Orange', weight: 0, price: 30, currentPrice: 0 }
     ],
     coupons: [
-      { id: 1, name: '30_PERCENT', active: false, type: 'percentual', value: 30, savings: '30%', amountOfDiscount: 0 },
-      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount', value: 100, savings: '$100', amountOfDiscount: 0},
-      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping', value: 0, savings: 'Free!', amountOfDiscount: 0},
+      { id: 1, name: '30_PERCENT', active: false, type: 'percentual', value: 30, savings: '30%' },
+      { id: 2, name: '100_OFF', active: false, type: 'fixed-amount', value: 100, savings: '$100'},
+      { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping', value: 0, savings: 'Free!'},
     ],
     customerCoupon: null,
     subtotal: 0,
     shipping: 0,
     total: 0,
+    couponSavings: 0,
     couponSubmitted: false,
     couponApprovalMessage: null,
     percentualCouponApplied: null,
     fixedCouponApplied: null,
-    freeShippingCouponApplied: null
-
+    freeShippingCouponApplied: null,
+    currentCouponInUse: null
   }
 
   // This is called when the user adds items to their cart.
@@ -56,11 +57,14 @@ class App extends Component {
     let calculateSubtotalsWeight = this.calculateSubtotal(newItems);
     let newSubtotal = calculateSubtotalsWeight[0];
     if (this.state.percentualCouponApplied) { 
-      newSubtotal *= (1 - (this.state.percentualCouponApplied * .01 ))
+      let preDiscountSubtotal = newSubtotal;
+      newSubtotal *= (1 - (this.state.percentualCouponApplied * .01 ));
+      this.calculateDiscountAmount(preDiscountSubtotal, newSubtotal)
+      console.log('pre discount sub: ', preDiscountSubtotal, 'new sub: ', newSubtotal)
     }
-    // console.log(newSubtotal, "<-newsubtotal")
     let newShipping = this.calculateShipping(newSubtotal, calculateSubtotalsWeight[1]);
     let newTotal = this.calculateTotalAmount(newSubtotal, newShipping);
+    // this.calculateDiscountAmount(newSubtotal, newTotal)
     this.setState({
       subtotal: newSubtotal,
       shipping: newShipping,
@@ -101,26 +105,35 @@ class App extends Component {
   // This calculates the total
   calculateTotalAmount = (newSubtotal, newShipping) => {
     let totalDiscount = 0;
-    if (this.state.fixedCouponApplied) { totalDiscount = this.state.fixedCouponApplied }
+    let couponType = null;
     if (typeof newShipping === 'number') {
       let totalBeforeDiscount = newSubtotal + newShipping;
       let newTotal = newSubtotal + newShipping - totalDiscount;
       if (newTotal < 0) {newTotal = 0};
-      this.calculateDiscountAmount(totalBeforeDiscount, newTotal)
-      return newTotal;
-    } else {
-      let totalBeforeDiscount = newSubtotal 
-      let newTotal = newSubtotal - totalDiscount;
-      if (newTotal < 0) {newTotal = 0};
-      this.calculateDiscountAmount(totalBeforeDiscount, newTotal)
+      if (this.state.fixedCouponApplied) { 
+        totalDiscount = this.state.fixedCouponApplied;
+        this.calculateDiscountAmount(totalBeforeDiscount, newTotal)
+      }
+        return newTotal;
+      } else {
+        let totalBeforeDiscount = newSubtotal 
+        let newTotal = newSubtotal - totalDiscount;
+        if (newTotal < 0) {newTotal = 0};
+        if (this.state.fixedCouponApplied) { 
+          totalDiscount = this.state.fixedCouponApplied;
+          this.calculateDiscountAmount(totalBeforeDiscount, newTotal)
+        }
       return newTotal;
     }
   };
 
   calculateDiscountAmount = (totalBeforeSavings, newTotal) => {
-    // console.log("total before savings: ", totalBeforeSavings, "new total: ", newTotal)
+    console.log("total before savings: ", totalBeforeSavings, "new total: ", newTotal)
     let totalSavings = totalBeforeSavings - newTotal
     console.log("total savings: ", totalSavings)
+    this.setState({
+      couponSavings: totalSavings
+    })
 
   }
 
@@ -134,7 +147,6 @@ class App extends Component {
   // This validates the coupon submitted by the user
   checkForCoupon = (e) => {
     e.preventDefault();
-    // console.log('customer coupon: ', this.state.customerCoupon);
     let couponApproved = false;
     const customerCoupon = this.state.customerCoupon;
     let couponIndex = null;
@@ -142,12 +154,9 @@ class App extends Component {
       if(element.name === customerCoupon) {
         couponApproved = true;
         couponIndex = this.state.coupons.findIndex( element => element.name == customerCoupon);
-        // this.activateCoupon(element);
         this.activateCoupon(couponIndex);
       }
     })
-    
-    // console.log('coupon index: ', couponIndex);
     this.setState({
       couponSubmitted: true,
       couponApprovalMessage: couponApproved
@@ -156,9 +165,8 @@ class App extends Component {
 
   // This activates a valid coupon
   activateCoupon = (couponIndex) => {
-    // console.log('coupon in activateCoupon', couponIndex);
     let coupon = this.state.coupons[couponIndex];
-    // console.log('coupon in activateCoupon', coupon);
+    console.log('coupon in activateCoupon', coupon);
     let newTotals = this.state.items;
     let newCoupons = this.state.coupons;
     newCoupons[couponIndex] = {
@@ -167,17 +175,27 @@ class App extends Component {
     }
     if (coupon.type === 'percentual') {
       this.setState({
+        currentCouponInUse: coupon,
         percentualCouponApplied: coupon.value
       }, () => this.calculateTotals(newTotals))
     } else if (coupon.type === 'fixed-amount') {
       this.setState({
+        currentCouponInUse: coupon,
         fixedCouponApplied: coupon.value
       }, () => this.calculateTotals(newTotals))
     } else if (coupon.type === 'free-shipping') {
       this.setState({
+        currentCouponInUse: coupon,
         freeShippingCouponApplied: coupon.value
       }, () => this.calculateTotals(newTotals))
     }
+  }
+
+  removeCoupon = () => {
+    console.log('remove clicked')
+    this.setState({
+      currentCouponInUse: null
+    })
   }
 
   render() {
@@ -185,7 +203,7 @@ class App extends Component {
       <div className="App">
         <div class="cart-container">
           <div class="cart-section">
-            <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} />
+            <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} removeCoupon={() => this.removeCoupon()} couponSavings={this.state.couponSavings}/>
           </div>
             <hr class="cart-divider"/>
           <div class="cart-section">

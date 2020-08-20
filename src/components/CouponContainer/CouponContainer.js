@@ -7,10 +7,10 @@ const CouponContainer = (props) => {
         {props.name}
       </td>
       <td class='line-item'>
-        <input class='remove-button' type='submit' value='Remove' />
+        <input class='remove-button' type='submit' value='Remove' onClick={props.removeCoupon}/>
       </td>
       <td class='line-item'>
-        $ -{props.amountOfDiscount}
+        $ -{props.couponSavings}
       </td>
       <td class='line-item coupon-line-item-right'>
         ({props.savings})

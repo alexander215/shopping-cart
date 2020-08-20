@@ -13,7 +13,7 @@ const ItemContainer = (props) => {
 
   const displayCoupons = coupons.map( element => {
     if (element.active) { 
-      return <CouponContainer key={element.id} name={element.name} active={element.active} savings={element.savings} amountOfDiscount={element.amountOfDiscount}/>
+      return <CouponContainer key={element.id} name={element.name} active={element.active} savings={element.savings} amountOfDiscount={element.amountOfDiscount} removeCoupon={props.removeCoupon} couponSavings={props.couponSavings}/>
     } else {
       return <></>
     }
