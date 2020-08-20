@@ -6,10 +6,10 @@ const CouponContainer = (props) => {
       <td class='line-item line-item-left'>
         {props.name}
       </td>
-      <td class='line-item'>
+      <td class='coupon-line-item'>
         <input class='remove-button' type='submit' value='Remove' onClick={props.removeCoupon}/>
       </td>
-      <td class='line-item'>
+      <td class='coupon-line-item'>
         $ -{props.couponSavings}
       </td>
       <td class='line-item coupon-line-item-right'>

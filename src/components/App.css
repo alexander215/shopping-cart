@@ -33,7 +33,11 @@
 }
 
 .line-item {
-  padding: 9px;
+  padding: 10px;
+}
+
+.coupon-line-item {
+  padding: 5px;
 }
 
 .line-item-left {
