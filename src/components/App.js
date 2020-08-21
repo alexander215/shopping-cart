@@ -34,7 +34,7 @@ class App extends Component {
   // This is called when the user adds items to their cart.
   // It increases the weight and calls calculatePrice to update the price.
   weightUpdate = (e) => {
-    const updateItemIndex = this.state.items.findIndex( element => element.id == e.target.id);
+    const updateItemIndex = this.state.items.findIndex( element => element.id == e.target.id );
     const newItems = [...this.state.items];
     const newWeight = parseInt(e.target.value);
     const newCurrentPrice = this.calculatePrice(updateItemIndex, newWeight)
@@ -162,7 +162,7 @@ class App extends Component {
       if(element.name === customerCoupon) {
         couponApproved = true;
         couponApprovalMessage = null;
-        couponIndex = this.state.coupons.findIndex( element => element.name == customerCoupon);
+        couponIndex = this.state.coupons.findIndex( element => element.name === customerCoupon);
         this.activateCoupon(couponIndex);
       }
     })
@@ -204,16 +204,36 @@ class App extends Component {
   }
 
   removeCoupon = () => {
-    let couponToDeactivateIndex = this.state.coupons.findIndex( element => element.name == this.state.currentCouponInUse.name);
+    const couponType = this.state.currentCouponInUse.name;
+    let newSubtotal = this.state.subtotal;
+    let newTotal = this.state.total;
+    let newShipping = this.state.shipping;
+    switch (couponType) {
+      case 'fixed-amount':
+        newSubtotal += this.state.couponSavings;
+        break;
+      case 'percentual':
+        newTotal += this.state.couponSavings;
+      case 'free-shipping':
+        newShipping += this.state.couponSavings
+    }
+    let couponToDeactivateIndex = this.state.coupons.findIndex( element => element.name === this.state.currentCouponInUse.name);
     let newCoupons = this.state.coupons;
     newCoupons[couponToDeactivateIndex] = {
       ...newCoupons[couponToDeactivateIndex],
       active: false
     }
+    let newTotals = this.state.items
     this.setState({
       currentCouponInUse: null,
-      coupons: newCoupons
-    })
+      coupons: newCoupons,
+      subtotal: newSubtotal,
+      total: newTotal,
+      shipping: newShipping,
+      percentualCouponApplied: null,
+      fixedCouponApplied: null,
+      freeShippingCouponApplied: null
+    }, () => this.calculateTotals(newTotals))
   }
 
   render() {
