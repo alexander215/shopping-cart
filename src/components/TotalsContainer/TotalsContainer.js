@@ -3,31 +3,31 @@ import '../App.css';
 
 const TotalsContainer = (props) => {
   return (
-    <table class="table-section">
+    <table className="table-section">
       <tbody>
-        <tr class="total-item">
-          <td class='line-item line-item-left'>
+        <tr className="total-item">
+          <td className='line-item line-item-left'>
             Subtotal:
           </td>
-          <td class='line-item line-item-right'>
+          <td className='line-item line-item-right'>
             $ {props.subtotal}
           </td>
         </tr>
-        <tr class="total-item">
-          <td class='line-item line-item-left'>
+        <tr className="total-item">
+          <td className='line-item line-item-left'>
             Shipping:
           </td>
-          <td class='line-item line-item-right'>
+          <td className='line-item line-item-right'>
           {(typeof props.shipping === 'number') ? <span>$</span> : null } {props.shipping}
           </td>
         </tr>
-        <tr class="total-item">
-          <td class='line-item line-item-left'>
+        <tr className="total-item">
+          <td className='line-item line-item-left'>
             <strong>
               Total:
             </strong>
           </td>
-          <td class='line-item line-item-right'>
+          <td className='line-item line-item-right'>
             <strong>
             $ {props.total} 
             </strong>

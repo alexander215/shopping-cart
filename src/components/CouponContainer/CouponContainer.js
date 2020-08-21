@@ -3,16 +3,16 @@ import React from 'react';
 const CouponContainer = (props) => {
   return (
     <tr>
-      <td class='line-item line-item-left'>
+      <td className='line-item line-item-left'>
         {props.name}
       </td>
-      <td class='coupon-line-item'>
-        <input class='remove-button' type='submit' value='Remove' onClick={props.removeCoupon}/>
+      <td className='coupon-line-item'>
+        <input className='remove-button' type='submit' value='Remove' onClick={props.removeCoupon}/>
       </td>
-      <td class='coupon-line-item'>
+      <td className='coupon-line-item'>
         $ -{props.couponSavings}
       </td>
-      <td class='line-item coupon-line-item-right'>
+      <td className='line-item coupon-line-item-right'>
         ({props.savings})
       </td>
     </tr>

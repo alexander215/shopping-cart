@@ -17,7 +17,7 @@ class App extends Component {
       { id: 2, name: '100_OFF', active: false, type: 'fixed-amount', value: 100, savings: '$100'},
       { id: 3, name: 'FREE_SHIPPING', active: false, type: 'free-shipping', value: 0, savings: 'Free!'},
     ],
-    customerCoupon: null,
+    customerCoupon: '',
     subtotal: 0,
     shipping: 0,
     total: 0,
@@ -213,21 +213,21 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div class="cart-container">
-          <div class="cart-section">
+        <div className="cart-container">
+          <div className="cart-section">
             <ItemContainer fruit={this.state.items} coupons={this.state.coupons} weightUpdate={e => this.weightUpdate(e)} removeCoupon={() => this.removeCoupon()} couponSavings={this.state.couponSavings}/>
           </div>
-            <hr class="cart-divider"/>
-          <div class="cart-section">
+            <hr className="cart-divider"/>
+          <div className="cart-section">
             <TotalsContainer subtotal={this.state.subtotal} shipping={this.state.shipping} total={this.state.total}/>
           </div>
-            <hr class="cart-divider"/>
-          <div class="cart-section">
+            <hr className="cart-divider"/>
+          <div className="cart-section">
             <CouponInput handleChange={this.handleChange} customerCoupon={this.state.customerCoupon} checkForCoupon={e => this.checkForCoupon(e)}/>
             {(this.state.couponSubmitted && !this.state.couponApprovalStatus) ? <CouponMessages couponApprovalMessage={this.state.couponApprovalMessage} /> : null }
           </div>
         </div>
-        <input class='purchase-button' type='submit' value='Purchase' />
+        <input className='purchase-button' type='submit' value='Purchase' />
       </div>
   );
 }
