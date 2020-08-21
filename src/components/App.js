@@ -204,9 +204,15 @@ class App extends Component {
   }
 
   removeCoupon = () => {
-    console.log('remove clicked')
+    let couponToDeactivateIndex = this.state.coupons.findIndex( element => element.name == this.state.currentCouponInUse.name);
+    let newCoupons = this.state.coupons;
+    newCoupons[couponToDeactivateIndex] = {
+      ...newCoupons[couponToDeactivateIndex],
+      active: false
+    }
     this.setState({
-      currentCouponInUse: null
+      currentCouponInUse: null,
+      coupons: newCoupons
     })
   }
 
